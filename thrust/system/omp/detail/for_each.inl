@@ -69,7 +69,11 @@ RandomAccessIterator for_each_n(execution_policy<DerivedPolicy> &,
   // use a signed type for the iteration variable or suffer the consequences of warnings
   typedef typename thrust::iterator_difference<RandomAccessIterator>::type DifferenceType;
   DifferenceType signed_n = n;
+#if (THRUST_DEVICE_COMPILER_IS_OMP_CAPABLE_SIMD == THRUST_TRUE)
+#pragma omp parallel for simd
+#else
 #pragma omp parallel for
+#endif
   for(DifferenceType i = 0;
       i < signed_n;
       ++i)
